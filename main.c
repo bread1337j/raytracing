@@ -15,7 +15,8 @@
 #define false 0
 #define RAYS_NUMBER 720
 #define OBSTACLES_NUMBER 3
-#define RAY_WIDTH 3
+#define RAY_WIDTH 1
+#define RAY_SPACING 1
 #define TIMEOUT 1000
 struct Circle {
     double x;
@@ -62,7 +63,7 @@ void FillRays(SDL_Surface *screen, struct Ray rays[RAYS_NUMBER], Uint32 color, s
         double y = rays[i].y_start;
         int isGoing = 1;
         while (x<=WIDTH && y<=HEIGHT && x>0 && y>0 && isGoing) {
-        #pragma omp parallel for
+            #pragma omp parallel for
             for (int j=0; j<OBSTACLES_NUMBER; j++) {
                 if (pow(x-obstacles[j].x, 2) + pow(y-obstacles[j].y, 2) <= obstacles[j].rsquared-1) {
                     isGoing = false;
@@ -71,8 +72,8 @@ void FillRays(SDL_Surface *screen, struct Ray rays[RAYS_NUMBER], Uint32 color, s
             if (isGoing) {
                 SDL_Rect pixel = (SDL_Rect){x, y, RAY_WIDTH, RAY_WIDTH};
                 SDL_FillRect(screen, &pixel, color);
-                x+=sin(rays[i].theta)*4;
-                y+=cos(rays[i].theta)*4;
+                x+=sin(rays[i].theta)*RAY_SPACING;
+                y+=cos(rays[i].theta)*RAY_SPACING;
             }
         }
 
