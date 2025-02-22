@@ -13,14 +13,15 @@
 #define COLOR_GREEN 0xff00ff00
 #define true 1
 #define false 0
-#define RAYS_NUMBER 360
+#define RAYS_NUMBER 720
 #define OBSTACLES_NUMBER 3
-#define RAY_WIDTH 8
+#define RAY_WIDTH 3
 #define TIMEOUT 1000
 struct Circle {
     double x;
     double y;
     double r;
+    double rsquared;
 };
 
 struct Ray {
@@ -63,15 +64,15 @@ void FillRays(SDL_Surface *screen, struct Ray rays[RAYS_NUMBER], Uint32 color, s
         while (x<=WIDTH && y<=HEIGHT && x>0 && y>0 && isGoing) {
         #pragma omp parallel for
             for (int j=0; j<OBSTACLES_NUMBER; j++) {
-                if (pow(x-obstacles[j].x, 2) + pow(y-obstacles[j].y, 2) <= pow(obstacles[j].r-1, 2)) {
+                if (pow(x-obstacles[j].x, 2) + pow(y-obstacles[j].y, 2) <= obstacles[j].rsquared-1) {
                     isGoing = false;
                 }
             }
             if (isGoing) {
                 SDL_Rect pixel = (SDL_Rect){x, y, RAY_WIDTH, RAY_WIDTH};
                 SDL_FillRect(screen, &pixel, color);
-                x+=sin(rays[i].theta)*2;
-                y+=cos(rays[i].theta)*2;
+                x+=sin(rays[i].theta)*4;
+                y+=cos(rays[i].theta)*4;
             }
         }
 
@@ -87,9 +88,9 @@ int main(int argc, char* argv[]) {
 
     //SDL_FillRect(screen, &rect, COLOR_WHITE);
     SDL_UpdateWindowSurface(window);
-    struct Circle circle = {200, 200, 80};
-    struct Circle shadow_circle = {WIDTH / 2 + 150, HEIGHT / 2, 140};
-    struct Circle shadow_circle2 = {WIDTH / 2, HEIGHT / 2+150, 40};
+    struct Circle circle = {200, 200, 80, pow(80, 2)};
+    struct Circle shadow_circle = {WIDTH / 2 + 150, HEIGHT / 2, 140, pow(140, 2)};
+    struct Circle shadow_circle2 = {WIDTH / 2, HEIGHT / 2+150, 40, pow(40, 2)};
 
     struct Circle obstacles[OBSTACLES_NUMBER];
     obstacles[0] = circle;
