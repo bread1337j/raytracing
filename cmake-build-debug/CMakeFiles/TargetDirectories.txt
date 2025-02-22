@@ -1,0 +1,3 @@
+C:/Users/bacha/CLionProjects/raytracing/cmake-build-debug/CMakeFiles/raytracing.dir
+C:/Users/bacha/CLionProjects/raytracing/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/bacha/CLionProjects/raytracing/cmake-build-debug/CMakeFiles/rebuild_cache.dir
